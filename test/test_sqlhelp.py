@@ -40,6 +40,20 @@ def test_insert():
         "{'a': 1}]"
     )
 
+    q = insert(
+        'table1'
+    ).values(
+        a=1,
+        b=2
+    ).returning('b')
+
+    assert str(q) == (
+        "query::[insert into table1 (a,b) "
+        "values (%(a)s,%(b)s) "
+        "returning b "
+        "{'a': 1, 'b': 2}]"
+    )
+
 
 def test_update():
     q = update(

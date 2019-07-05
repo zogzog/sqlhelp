@@ -32,15 +32,20 @@ class insert(_sqlbase):
 
     usage: insert('mytable').values(v1=42, v2='Babar')
     """
-    __slots__ = ('_table', '_kw')
+    __slots__ = ('_table', '_kw', '_returning')
 
     def __init__(self, table):
         self._table = table
         self._kw = None
+        self._returning = 'id'
 
     def values(self, **values):
         """Declare values to insert."""
         self._kw = values
+        return self
+
+    def returning(self, name):
+        self._returning = name
         return self
 
     def _assemble(self):
@@ -51,7 +56,7 @@ class insert(_sqlbase):
         return (
             f'insert into {self._table} '
             f'({names}) values ({holders}) '
-            'returning id'
+            f'returning {self._returning}'
         ), self._kw.copy()
 
 
